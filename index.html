@@ -173,12 +173,11 @@ textarea { font-family: 'IBM Plex Sans', sans-serif; resize: vertical; min-heigh
 <div class="metric-target">/ 100oz target</div>
 <div class="metric-bar"><div class="metric-bar-fill" id="waterBar" style="width:0%"></div></div>
 <div class="counter-buttons">
-<button class="counter-btn" onclick="addWater(16)">+16</button>
-<button class="counter-btn" onclick="addWater(24)">+24</button>
-<button class="counter-btn" onclick="addWater(34)">+34</button>
-</div>
-<button class="counter-btn minus" style="margin-top:6px;width:100%" onclick="addWater(-16)">− 16</button>
-</div>
+        <div style="display:flex;gap:6px;margin-top:12px">
+          <input type="number" id="waterInput" placeholder="oz" inputmode="numeric" style="flex:1;padding:10px;font-size:14px">
+          <button class="counter-btn" style="flex:0 0 60px" onclick="addCustomWater()">ADD</button>
+        </div>
+        <button class="counter-btn minus" style="margin-top:6px;width:100%" onclick="addWater(-16)">UNDO (−16)</button>
 </div>
 <div class="card">
 <div class="card-title">STEPS <span class="card-value" id="stepsDisplay">0</span></div>

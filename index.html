@@ -159,11 +159,12 @@ textarea { font-family: 'IBM Plex Sans', sans-serif; resize: vertical; min-heigh
 <div class="metric-value" id="proteinValue">0</div>
 <div class="metric-target">/ 180g target</div>
 <div class="metric-bar"><div class="metric-bar-fill" id="proteinBar" style="width:0%"></div></div>
-<div class="counter-buttons">
-<button class="counter-btn" onclick="addProtein(20)">+20</button>
-<button class="counter-btn" onclick="addProtein(35)">+35</button>
-<button class="counter-btn" onclick="addProtein(50)">+50</button>
-</div>
+        <div style="display:flex;gap:6px;margin-top:12px">
+          <input type="number" id="proteinInput" placeholder="g" inputmode="numeric" style="flex:1;padding:10px;font-size:14px">
+          <button class="counter-btn" style="flex:0 0 60px" onclick="addCustomProtein()">ADD</button>
+        </div>
+        <button class="counter-btn minus" style="margin-top:6px;width:100%" onclick="addProtein(-10)">UNDO LAST (−10)</button>
+
 <button class="counter-btn minus" style="margin-top:6px;width:100%" onclick="addProtein(-10)">− 10</button>
 </div>
 <div class="metric-card">

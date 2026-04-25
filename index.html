@@ -9,8 +9,8 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Discipline">
 <meta name="theme-color" content="#0a0e14">
-<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'%3E%3Crect width='180' height='180' fill='%230a0e14'/%3E%3Ctext x='90' y='118' font-family='Georgia,serif' font-size='110' font-weight='bold' text-anchor='middle' fill='%23d4a04c'%3ED%3C/text%3E%3C/svg%3E">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%230a0e14'/%3E%3Ctext x='16' y='22' font-family='Georgia,serif' font-size='20' font-weight='bold' text-anchor='middle' fill='%23d4a04c'%3ED%3C/text%3E%3C/svg%3E">
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'%3E%3Crect width='180' height='180' fill='%230a0e14'/%3E%3Ctext x='90' y='118' font-family='Georgia,serif' font-size='100' font-weight='bold' fill='%23d4a04c' text-anchor='middle'%3ED%3C/text%3E%3C/svg%3E" sizes="180x180">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%230a0e14'/%3E%3Ctext x='16' y='22' font-family='Georgia,serif' font-size='18' font-weight='bold' fill='%23d4a04c' text-anchor='middle'%3ED%3C/text%3E%3C/svg%3E" sizes="32x32">
 <style>
 :root {
   --bg: #0a0e14;
@@ -46,12 +46,12 @@ body {
 .header { padding: 24px 16px 16px; border-bottom: 1px solid var(--border); margin-bottom: 20px; }
 .header-top { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px; }
 .app-title { font-size: 22px; font-weight: 800; letter-spacing: 3px; color: var(--accent); text-transform: uppercase; }
-.day-badge { font-family: 'SF Mono', Menlo, monospace; font-size: 11px; color: var(--text-dim); background: var(--surface); padding: 4px 10px; border: 1px solid var(--border); border-radius: 2px; letter-spacing: 0.5px; }
+.day-badge { font-family: 'SF Mono', Menlo, monospace; font-size: 11px; color: var(--text-dim); background: var(--surface); padding: 4px 10px; border: 1px solid var(--border); border-radius: 2px; letter-spacing: 1px; }
 .date-line { font-family: 'SF Mono', Menlo, monospace; font-size: 12px; color: var(--text-faint); letter-spacing: 1px; text-transform: uppercase; }
 .goal-line { margin-top: 12px; font-size: 13px; color: var(--text-dim); }
 .goal-line strong { color: var(--accent); font-weight: 600; }
 .tabbar { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(10,14,20,0.95); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-top: 1px solid var(--border); display: flex; z-index: 100; padding-bottom: env(safe-area-inset-bottom); }
-.tab { flex: 1; padding: 14px 4px 18px; text-align: center; font-size: 12px; font-weight: 700; letter-spacing: 2px; color: var(--text-faint); cursor: pointer; border: none; background: transparent; border-top: 2px solid transparent; transition: all 0.2s; text-transform: uppercase; }
+.tab { flex: 1; padding: 14px 4px 18px; text-align: center; font-size: 12px; font-weight: 700; letter-spacing: 2px; color: var(--text-faint); cursor: pointer; border: none; background: transparent; border-top: 3px solid transparent; }
 .tab.active { color: var(--accent); border-top-color: var(--accent); }
 .card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 18px; margin-bottom: 14px; }
 .card-title { font-size: 13px; font-weight: 700; letter-spacing: 2.5px; color: var(--text-dim); margin-bottom: 14px; display: flex; justify-content: space-between; align-items: center; text-transform: uppercase; }
@@ -65,12 +65,11 @@ body {
 .metric-bar-fill { height: 100%; background: var(--accent); transition: width 0.4s ease; border-radius: 2px; }
 .metric-bar-fill.complete { background: var(--success); }
 .add-row { display: flex; gap: 6px; margin-top: 12px; }
-.add-input { flex: 1; background: var(--surface-2); border: 1px solid var(--border); color: var(--text); padding: 10px 12px; font-size: 16px; border-radius: 4px; outline: none; min-width: 0; font-family: 'SF Mono', Menlo, monospace; text-align: center; }
+.add-input { flex: 1; background: var(--surface-2); border: 1px solid var(--border); color: var(--text); padding: 10px 12px; font-size: 16px; border-radius: 4px; outline: none; min-width: 0; font-family: -apple-system, BlinkMacSystemFont, sans-serif; }
 .add-input:focus { border-color: var(--accent); }
 .add-btn { flex: 0 0 56px; background: var(--accent); border: none; color: var(--bg); padding: 10px 4px; font-weight: 800; font-size: 12px; letter-spacing: 1px; border-radius: 4px; cursor: pointer; }
 .add-btn:active { background: var(--accent-bright); }
-.undo-btn { width: 100%; margin-top: 6px; background: var(--surface-2); border: 1px solid var(--border); color: var(--text-dim); padding: 8px; font-size: 11px; font-weight: 600; letter-spacing: 1px; border-radius: 4px; cursor: pointer; text-transform: uppercase; }
-.check-item { display: flex; align-items: center; padding: 14px 16px; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; margin-bottom: 8px; cursor: pointer; transition: all 0.15s; }
+.check-item { display: flex; align-items: center; padding: 14px 16px; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; margin-bottom: 8px; cursor: pointer; transition: all 0.2s; }
 .check-item:active { background: var(--surface-2); }
 .check-item.checked { border-color: var(--success); background: var(--success-dim); }
 .check-box { width: 22px; height: 22px; border: 2px solid var(--text-faint); border-radius: 4px; margin-right: 14px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
@@ -79,10 +78,10 @@ body {
 .check-item.checked .check-box svg { opacity: 1; }
 .check-label { font-size: 15px; font-weight: 500; flex: 1; }
 .check-sub { font-size: 12px; color: var(--text-dim); margin-top: 2px; }
-input[type="number"], input[type="text"], textarea { width: 100%; background: var(--surface-2); border: 1px solid var(--border); color: var(--text); padding: 12px 14px; font-size: 16px; border-radius: 6px; outline: none; transition: border-color 0.15s; font-family: 'SF Mono', Menlo, monospace; }
+input[type="number"], input[type="text"], textarea { width: 100%; background: var(--surface-2); border: 1px solid var(--border); color: var(--text); padding: 12px 14px; font-size: 16px; border-radius: 4px; outline: none; }
 input[type="number"]:focus, input[type="text"]:focus, textarea:focus { border-color: var(--accent); }
 textarea { font-family: -apple-system, BlinkMacSystemFont, sans-serif; resize: vertical; min-height: 80px; }
-.weight-hero { background: linear-gradient(135deg, var(--surface) 0%, var(--surface-2) 100%); border: 1px solid var(--border); border-radius: 12px; padding: 24px 20px; text-align: center; margin-bottom: 16px; position: relative; overflow: hidden; }
+.weight-hero { background: linear-gradient(135deg, var(--surface) 0%, var(--surface-2) 100%); border: 1px solid var(--border); border-radius: 12px; padding: 24px 20px; text-align: center; margin-bottom: 20px; position: relative; overflow: hidden; }
 .weight-hero::before { content: ''; position: absolute; top: -50%; right: -20%; width: 60%; height: 200%; background: radial-gradient(ellipse, rgba(212,160,76,0.15), transparent 70%); pointer-events: none; }
 .weight-label { font-size: 12px; font-weight: 700; letter-spacing: 2.5px; color: var(--text-dim); text-transform: uppercase; }
 .weight-value { font-family: 'SF Mono', Menlo, monospace; font-size: 56px; font-weight: 700; color: var(--accent); margin: 8px 0 4px; line-height: 1; }
@@ -107,7 +106,7 @@ textarea { font-family: -apple-system, BlinkMacSystemFont, sans-serif; resize: v
 .exercise-name { font-weight: 600; font-size: 16px; margin-bottom: 4px; }
 .exercise-meta { font-family: 'SF Mono', Menlo, monospace; font-size: 12px; color: var(--text-dim); }
 .exercise-sets { display: flex; gap: 8px; margin-top: 12px; }
-.set-pill { flex: 1; padding: 10px; background: var(--surface-2); border: 1px solid var(--border); border-radius: 4px; text-align: center; font-family: 'SF Mono', Menlo, monospace; font-size: 12px; font-weight: 600; cursor: pointer; color: var(--text-dim); transition: all 0.15s; }
+.set-pill { flex: 1; padding: 10px; background: var(--surface-2); border: 1px solid var(--border); border-radius: 4px; text-align: center; font-family: 'SF Mono', Menlo, monospace; font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
 .set-pill.done { background: var(--success-dim); border-color: var(--success); color: var(--success); }
 .food-section { margin-bottom: 20px; }
 .food-section-title { font-size: 20px; font-weight: 800; letter-spacing: 3px; margin-bottom: 4px; text-transform: uppercase; }
@@ -123,13 +122,13 @@ textarea { font-family: -apple-system, BlinkMacSystemFont, sans-serif; resize: v
 .page { display: none; padding-bottom: 20px; }
 .page.active { display: block; animation: fadeIn 0.25s ease; }
 @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
-.btn-primary { width: 100%; background: var(--accent); color: var(--bg); border: none; padding: 14px; font-size: 14px; font-weight: 800; letter-spacing: 3px; border-radius: 6px; cursor: pointer; margin-top: 10px; text-transform: uppercase; }
+.btn-primary { width: 100%; background: var(--accent); color: var(--bg); border: none; padding: 14px; font-size: 14px; font-weight: 800; letter-spacing: 3px; border-radius: 6px; cursor: pointer; margin-top: 12px; }
 .btn-primary:active { background: var(--accent-bright); }
 .btn-secondary { width: 100%; background: var(--surface-2); color: var(--text); border: 1px solid var(--border); padding: 12px; font-size: 14px; border-radius: 6px; cursor: pointer; margin-top: 8px; }
 .empty-state { text-align: center; padding: 32px 16px; color: var(--text-faint); font-size: 14px; }
-.toast { position: fixed; top: calc(24px + env(safe-area-inset-top)); left: 50%; transform: translateX(-50%) translateY(-80px); background: var(--surface-3); color: var(--text); padding: 10px 20px; border-radius: 6px; border: 1px solid var(--accent); font-size: 13px; font-weight: 500; z-index: 200; transition: transform 0.3s ease; white-space: nowrap; }
+.toast { position: fixed; top: calc(24px + env(safe-area-inset-top)); left: 50%; transform: translateX(-50%) translateY(-80px); background: var(--surface-3); color: var(--text); padding: 10px 20px; border-radius: 6px; font-size: 13px; transition: transform 0.3s; z-index: 1000; }
 .toast.show { transform: translateX(-50%) translateY(0); }
-.legend-stripe { height: 3px; background: linear-gradient(90deg, var(--success) 0%, var(--success) 33%, var(--accent) 33%, var(--accent) 66%, var(--danger) 66%, var(--danger) 100%); border-radius: 2px; margin: 8px 0 20px; }
+.legend-stripe { height: 3px; background: linear-gradient(90deg, var(--success) 0%, var(--success) 33%, var(--accent) 33%, var(--accent) 66%, var(--danger) 66%, var(--danger) 100%); border-radius: 2px; }
 .settings-row { display: flex; gap: 8px; margin-top: 12px; }
 .settings-row button { flex: 1; }
 .version-tag { text-align: center; font-size: 10px; color: var(--text-faint); margin-top: 20px; font-family: 'SF Mono', Menlo, monospace; letter-spacing: 1px; }
@@ -157,7 +156,6 @@ textarea { font-family: -apple-system, BlinkMacSystemFont, sans-serif; resize: v
 <input type="number" class="add-input" id="proteinInput" placeholder="grams" inputmode="numeric">
 <button class="add-btn" onclick="addCustomProtein()">ADD</button>
 </div>
-<button class="undo-btn" onclick="addProtein(-10)">Undo (−10g)</button>
 </div>
 <div class="metric-card">
 <div class="metric-label">Water</div>
@@ -168,7 +166,6 @@ textarea { font-family: -apple-system, BlinkMacSystemFont, sans-serif; resize: v
 <input type="number" class="add-input" id="waterInput" placeholder="oz" inputmode="numeric">
 <button class="add-btn" onclick="addCustomWater()">ADD</button>
 </div>
-<button class="undo-btn" onclick="addWater(-16)">Undo (−16oz)</button>
 </div>
 </div>
 
@@ -214,7 +211,7 @@ textarea { font-family: -apple-system, BlinkMacSystemFont, sans-serif; resize: v
 <input type="file" id="importFile" accept=".json" style="display:none">
 </div>
 
-<div class="version-tag">v2.0 · loaded ok</div>
+<div class="version-tag">v2.1 · loaded ok</div>
 </div>
 
 <div class="page" id="page-workout">
@@ -264,11 +261,11 @@ textarea { font-family: -apple-system, BlinkMacSystemFont, sans-serif; resize: v
 <div class="food-section-sub">Hit your protein and veggie targets from these. No portion stress.</div>
 <div class="food-category">Protein Anchors</div>
 <div>
-<span class="food-tag">Eggs (whole)</span><span class="food-tag">Chicken breast</span><span class="food-tag">Chicken thigh/leg</span><span class="food-tag">Rotisserie chicken</span><span class="food-tag">Ground turkey 93/7</span><span class="food-tag">Lean ground beef 93/7+</span><span class="food-tag">Sirloin / flank steak</span><span class="food-tag">Pork tenderloin</span><span class="food-tag">Salmon</span><span class="food-tag">Tuna (canned in water)</span><span class="food-tag">Shrimp</span><span class="food-tag">Tilapia / cod</span><span class="food-tag">Greek yogurt (plain)</span><span class="food-tag">Cottage cheese</span><span class="food-tag">Whey protein</span><span class="food-tag">Hard-boiled eggs</span>
+<span class="food-tag">Eggs (whole)</span><span class="food-tag">Chicken breast</span><span class="food-tag">Chicken thigh/leg</span><span class="food-tag">Rotisserie chicken</span><span class="food-tag">Ground turkey</span><span class="food-tag">Salmon</span><span class="food-tag">Tuna</span>
 </div>
 <div class="food-category">Vegetables — Unlimited</div>
 <div>
-<span class="food-tag">Broccoli</span><span class="food-tag">Cauliflower</span><span class="food-tag">Bell peppers</span><span class="food-tag">Spinach</span><span class="food-tag">Kale</span><span class="food-tag">Romaine / mixed greens</span><span class="food-tag">Cucumber</span><span class="food-tag">Zucchini</span><span class="food-tag">Asparagus</span><span class="food-tag">Brussels sprouts</span><span class="food-tag">Green beans</span><span class="food-tag">Mushrooms</span><span class="food-tag">Tomatoes</span><span class="food-tag">Cabbage / coleslaw mix</span><span class="food-tag">Celery</span><span class="food-tag">Onions</span><span class="food-tag">Cauliflower rice</span><span class="food-tag">Radishes</span>
+<span class="food-tag">Broccoli</span><span class="food-tag">Cauliflower</span><span class="food-tag">Bell peppers</span><span class="food-tag">Spinach</span><span class="food-tag">Kale</span><span class="food-tag">Lettuce</span><span class="food-tag">Mushrooms</span><span class="food-tag">Zucchini</span>
 </div>
 <div class="food-category">Fruits (Low-Sugar)</div>
 <div>
@@ -276,7 +273,7 @@ textarea { font-family: -apple-system, BlinkMacSystemFont, sans-serif; resize: v
 </div>
 <div class="food-category">Fats / Extras</div>
 <div>
-<span class="food-tag">Olive oil</span><span class="food-tag">Almonds (1 oz)</span><span class="food-tag">Walnuts (1 oz)</span><span class="food-tag">Olives</span><span class="food-tag">Pickles</span><span class="food-tag">Mustard</span><span class="food-tag">Hot sauce</span><span class="food-tag">Salsa</span><span class="food-tag">Vinegar</span><span class="food-tag">Most spices</span>
+<span class="food-tag">Olive oil</span><span class="food-tag">Almonds (1 oz)</span><span class="food-tag">Walnuts (1 oz)</span><span class="food-tag">Olives</span><span class="food-tag">Pickles</span><span class="food-tag">Peanut butter (1 tbsp)</span>
 </div>
 <div class="food-category">Drinks</div>
 <div>
@@ -288,7 +285,7 @@ textarea { font-family: -apple-system, BlinkMacSystemFont, sans-serif; resize: v
 <div class="food-section-title">⚠ Limit</div>
 <div class="food-section-sub">Fine in moderation. Don't make these the main event.</div>
 <div>
-<span class="food-tag">String cheese (2/day max)</span><span class="food-tag">Shredded cheese</span><span class="food-tag">Cream cheese</span><span class="food-tag">Bacon (2-3 strips)</span><span class="food-tag">Turkey deli slices</span><span class="food-tag">Peanut butter (1 tbsp)</span><span class="food-tag">Almond butter (1 tbsp)</span><span class="food-tag">Coke Zero / diet soda</span><span class="food-tag">Sugar-free jello</span><span class="food-tag">Sugar-free gum</span><span class="food-tag">Beef jerky (low sugar)</span><span class="food-tag">Protein bars (under 5g sugar)</span><span class="food-tag">Protein shakes</span><span class="food-tag">Heavy cream (in coffee)</span><span class="food-tag">Banana</span><span class="food-tag">Apple</span><span class="food-tag">Greek yogurt (flavored)</span>
+<span class="food-tag">String cheese (2/day max)</span><span class="food-tag">Shredded cheese</span><span class="food-tag">Cream cheese</span><span class="food-tag">Bacon (2-3 strips)</span><span class="food-tag">Greek yogurt (plain)</span><span class="food-tag">Cottage cheese</span>
 </div>
 </div>
 
@@ -296,7 +293,7 @@ textarea { font-family: -apple-system, BlinkMacSystemFont, sans-serif; resize: v
 <div class="food-section-title">✕ Avoid Through July 27</div>
 <div class="food-section-sub">These quietly stall fat loss. Skip until you hit goal weight.</div>
 <div>
-<span class="food-tag">Bread / rolls / buns</span><span class="food-tag">Pasta</span><span class="food-tag">Rice</span><span class="food-tag">Cereal</span><span class="food-tag">Oatmeal (sweetened)</span><span class="food-tag">Tortillas</span><span class="food-tag">Crackers</span><span class="food-tag">Chips / pretzels</span><span class="food-tag">French fries</span><span class="food-tag">Tater tots / hash browns</span><span class="food-tag">Cookies / cake / candy</span><span class="food-tag">Ice cream</span><span class="food-tag">Donuts / pastries</span><span class="food-tag">Regular soda</span><span class="food-tag">Sweet tea</span><span class="food-tag">Fruit juice</span><span class="food-tag">Sweetened coffee drinks</span><span class="food-tag">Dunkin protein refreshers</span><span class="food-tag">Alcohol</span><span class="food-tag">Honey BBQ sauce</span><span class="food-tag">Ketchup with sugar</span><span class="food-tag">Teriyaki / sweet and sour</span><span class="food-tag">Sweet salad dressings</span><span class="food-tag">Granola / granola bars</span><span class="food-tag">Light muffins</span><span class="food-tag">High-sodium deli meats</span><span class="food-tag">Breaded / fried foods</span>
+<span class="food-tag">Bread / rolls / buns</span><span class="food-tag">Pasta</span><span class="food-tag">Rice</span><span class="food-tag">Cereal</span><span class="food-tag">Oatmeal (sweetened)</span><span class="food-tag">Sugar / candy</span><span class="food-tag">Soda / juice</span><span class="food-tag">Chips / crackers</span><span class="food-tag">Cookies / cakes</span>
 </div>
 </div>
 

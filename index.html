@@ -393,6 +393,23 @@ function renderToday() {
 }
 function addProtein(n) { todayData.protein = Math.max(0, todayData.protein + n); renderToday(); saveToday(); }
 function addWater(n) { todayData.water = Math.max(0, todayData.water + n); renderToday(); saveToday(); }
+function addCustomProtein() {
+  const input = document.getElementById('proteinInput');
+  const val = parseInt(input.value);
+  if (!val || val < 1) { showToast('Enter a number'); return; }
+  addProtein(val);
+  input.value = '';
+  showToast(`+${val}g protein`);
+}
+function addCustomWater() {
+  const input = document.getElementById('waterInput');
+  const val = parseInt(input.value);
+  if (!val || val < 1) { showToast('Enter a number'); return; }
+  addWater(val);
+  input.value = '';
+  showToast(`+${val}oz water`);
+}
+
 function toggleCheck(key) { todayData[key] = !todayData[key]; renderToday(); saveToday(); if (todayData[key]) showToast('Locked in'); }
 document.querySelectorAll('.check-item').forEach(el => { el.addEventListener('click', () => { const key = el.dataset.key; if (key) toggleCheck(key); }); });
 document.getElementById('stepsInput').addEventListener('input', (e) => { todayData.steps = parseInt(e.target.value) || 0; renderToday(); saveToday(); });

@@ -18,7 +18,7 @@ SNAP_FIELDS = [("views", "Views", int), ("viewers", "Viewers", int), ("new_viewe
                ("total_followers", "Total followers", int), ("engaged_views", "Engaged views", int),
                ("watch_hours", "Watch time (hrs)", float), ("stayed_pct", "Stayed to watch %", float)]
 
-# Grouped navigation (same idea as the teacher toolkit): bottom tab bar on phones, sidebar on desktop.
+# Grouped navigation: bottom tab bar on phones, sidebar on desktop.
 # (color group, label, icon, [(href, tab label, icon)], solo?)
 NAV_GROUPS = [
     ("plan", "Today", "home", [("/", "Today", "home")], True),

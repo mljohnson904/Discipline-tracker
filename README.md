@@ -89,7 +89,7 @@ With the key set, the script builder shows an **Ask Claude** panel. Pick a targe
 
 ## Look and navigation
 
-The interface follows the "Personal Finance Teacher Toolkit" design: a warm paper palette with a dark mode, a top app bar, and colour-coded sections.
+Channel Builder is a standalone app (its own code, database and pages). The interface uses a warm paper palette with a dark mode, a top app bar, and colour-coded sections.
 
 - **Phones:** a bottom tab bar (Today, Plan, Track, Checklist, Data). Plan and Track open a small menu above the bar. **Desktop (1000px+):** the same groups as a left sidebar.
 - **Search** (top bar; press `/` anywhere): finds posts, hooks, scripts, series and next-part ideas. Arrow keys + Enter, or tap a result.

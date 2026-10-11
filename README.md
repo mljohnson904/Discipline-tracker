@@ -96,3 +96,7 @@ Channel Builder is a standalone app (its own code, database and pages). The inte
 - **Dark/light toggle** (sun/moon button) is remembered in this browser; the default follows your device setting.
 - **Today** page opens with a hero: the profile-checklist ring and this week's top suggested action from the weekly review.
 - Printing a page hides the navigation and prints just the content.
+
+## Web version (single page, no install)
+
+`web/channel-builder.html` is the same app as one self-contained page for claude.ai Artifacts (source in `web/src/`, built with `python3 web/build.py`). It needs no Python: your data is kept in the page's own database (`db` capability, owner-only), so it follows you between phone and computer. In the page, CSV/zip/JSON exports use the `downloads` capability, and **Ask Claude** uses the `sample` capability, so there is no API key to manage. Without those capabilities (for example if the file is opened directly) it falls back to saving in the browser and to copy-text boxes.

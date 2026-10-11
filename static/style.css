@@ -43,3 +43,5 @@ fieldset{border:1px solid var(--line);border-radius:12px}
 .bar i{position:absolute;left:0;top:0;bottom:0;background:var(--accent);opacity:.22}.bar span,.bar b{position:relative}
 .aud{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px}
 @media(max-width:600px){main{padding:12px}}
+.flash{background:#e7f6ec;color:var(--ok);padding:10px 14px;border-radius:10px;font-weight:600}
+details{margin:12px 0}summary{cursor:pointer}

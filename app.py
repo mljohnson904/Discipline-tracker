@@ -13,8 +13,9 @@ import os
 import re
 from datetime import date, timedelta
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
-from urllib.parse import parse_qs, urlparse
+from urllib.parse import parse_qs, quote, urlparse
 
+import csvio
 import db
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
@@ -32,7 +33,7 @@ SNAP_FIELDS = [("views", "Views", int), ("viewers", "Viewers", int), ("new_viewe
                ("total_followers", "Total followers", int), ("engaged_views", "Engaged views", int),
                ("watch_hours", "Watch time (hrs)", float), ("stayed_pct", "Stayed to watch %", float)]
 
-NAV = [("/", "Dashboard"), ("/posts", "Posts"), ("/snapshots", "Channel stats")]
+NAV = [("/", "Dashboard"), ("/posts", "Posts"), ("/snapshots", "Channel stats"), ("/data", "Data")]
 
 
 # ------------------------------------------------------------------ helpers
@@ -473,15 +474,90 @@ def save_snapshot(conn, f, sid=None):
                      [plat, start, end, days, txt(one("notes")), *vals])
 
 
+# ------------------------------------------------------------------ data: export / import
+IMPORT_JS = """<script>
+document.getElementById('csvfile').addEventListener('change', function (e) {
+  var f = e.target.files[0]; if (!f) return;
+  var r = new FileReader();
+  r.onload = function () { document.getElementById('csvtext').value = r.result; };
+  r.readAsText(f);
+});
+</script>"""
+
+
+def page_data(conn, q, path):
+    msg = q.get("msg", [""])[0]
+    msg_html = f'<p class="flash">{esc(msg)}</p>' if msg else ""
+    counts = {t: conn.execute(f"SELECT COUNT(*) FROM {t}").fetchone()[0] for t in csvio.EXPORT_TABLES}
+    links = "".join(f'<li><a href="/export/{t}.csv">{t}.csv</a> <span class="muted">({counts[t]} rows)</span></li>'
+                    for t in csvio.EXPORT_TABLES)
+    cols = ", ".join(csvio.FLAT_COLS)
+    body = f"""<h1>Data</h1>{msg_html}
+<h2>Export</h2>
+<p><a class="btn primary" href="/export.zip">Download everything (.zip of CSVs)</a></p>
+<p class="muted"><b>post_log.csv</b> is the flat post log (one row per post per metric window) and can be
+re-imported below. The rest are raw tables for backup or spreadsheets.</p>
+<ul><li><a href="/export/post_log.csv">post_log.csv</a> <span class="muted">(re-importable)</span></li>{links}</ul>
+<h2>Import post log (CSV)</h2>
+<form method="post" action="/import/preview" class="stack">
+<label>Choose a .csv file<input type="file" id="csvfile" accept=".csv,text/csv,text/plain"></label>
+<label>…or paste CSV text<textarea id="csvtext" name="csv" rows="8" placeholder="title,platform,post_date,views,..."></textarea></label>
+<button class="btn primary">Preview import</button></form>
+<details><summary>CSV format</summary>
+<p class="muted">First row = headers. Required: <b>title</b>, <b>platform</b> (TikTok / YouTube / Instagram).
+Optional: {esc(cols)}.</p>
+<ul class="muted"><li>A row whose platform + title match an existing post <b>updates</b> it; otherwise a new post is created.
+Blank cells never erase existing data.</li>
+<li>Metrics need a window: <b>window_days</b> (7, 28 or 30, default 28) and <b>window_end</b> (YYYY-MM-DD, default today).
+Re-importing the same window updates that record instead of duplicating it.</li>
+<li>Put the same post on two rows to give it two windows (e.g. 7 and 28 days).</li>
+<li>Dates: YYYY-MM-DD or M/D/YYYY. Numbers may contain commas or %. Leave unknowns blank, not 0.</li></ul></details>
+{IMPORT_JS}"""
+    return layout("Data", body, path)
+
+
+def page_import_preview(conn, text):
+    rows, unknown = csvio.parse(text)
+    csvio.plan(conn, rows)
+    if not rows:
+        return layout("Import", '<h1>Import preview</h1><p>No data rows found. <a href="/data">Back</a></p>', "/data")
+    n = {k: sum(1 for r in rows if r["status"] == k) for k in ("new", "update", "error")}
+    trs = ""
+    for r in rows[:300]:
+        if r["status"] == "error":
+            detail = f'<span class="flag-inline">{esc(r["error"])}</span>'
+        else:
+            bits = [f"{k}: {r[k]}" for k in csvio.INT_COLS if r[k] is not None]
+            if r["stayed_pct"] is not None:
+                bits.append(f"stayed: {r['stayed_pct']}%")
+            detail = (f'{r["window_days"]}d to {esc(r["window_end"])}: ' + ", ".join(bits)) if bits else "no metrics"
+        trs += (f'<tr><td>{r["line"]}</td><td><b>{esc(r["status"])}</b></td><td>{esc(PNAME.get(r.get("platform"), ""))}'
+                f'</td><td>{esc(r["title"])}</td><td>{detail}</td></tr>')
+    more = f'<p class="muted">Showing first 300 of {len(rows)} rows.</p>' if len(rows) > 300 else ""
+    warn = (f'<p class="muted">Ignored unknown column(s): {esc(", ".join(unknown))}</p>' if unknown else "")
+    commit = (f'<form method="post" action="/import/commit" class="stack">'
+              f'<textarea name="csv" hidden>{esc(text)}</textarea>'
+              f'<button class="btn primary">Import {n["new"] + n["update"]} row(s)</button> '
+              f'<a class="btn" href="/data">Cancel</a></form>') if n["new"] + n["update"] else \
+        '<p><a class="btn" href="/data">Back</a></p>'
+    body = (f'<h1>Import preview</h1><p><b>{n["new"]}</b> new post(s) · <b>{n["update"]}</b> update(s) · '
+            f'<b>{n["error"]}</b> error(s) <span class="muted">(errors are skipped)</span></p>{warn}{commit}'
+            f'<div class="scroll"><table><thead><tr><th>Line</th><th>Action</th><th>Platform</th><th>Title</th>'
+            f'<th>Details</th></tr></thead><tbody>{trs}</tbody></table></div>{more}')
+    return layout("Import preview", body, "/data")
+
+
 # ------------------------------------------------------------------ server
 class Handler(BaseHTTPRequestHandler):
     def log_message(self, *a):
         pass
 
-    def send(self, body, status=200, ctype="text/html; charset=utf-8"):
+    def send(self, body, status=200, ctype="text/html; charset=utf-8", filename=None):
         data = body.encode() if isinstance(body, str) else body
         self.send_response(status)
         self.send_header("Content-Type", ctype)
+        if filename:
+            self.send_header("Content-Disposition", f'attachment; filename="{filename}"')
         self.send_header("Content-Length", str(len(data)))
         self.end_headers()
         self.wfile.write(data)
@@ -501,6 +577,13 @@ class Handler(BaseHTTPRequestHandler):
             return self.send("not found", 404, "text/plain")
         conn = db.connect()
         try:
+            if u.path == "/export.zip":
+                return self.send(csvio.export_zip(conn), ctype="application/zip",
+                                 filename=f"channel-builder-{date.today().isoformat()}.zip")
+            m = re.fullmatch(r"/export/(\w+)\.csv", u.path)
+            if m:
+                data = csvio.post_log_csv(conn) if m[1] == "post_log" else csvio.table_csv(conn, m[1])
+                return self.send(data, ctype="text/csv; charset=utf-8", filename=f"{m[1]}.csv")
             self.send(self.route_get(conn, u.path, parse_qs(u.query)))
         except LookupError:
             self.send(layout("Not found", "<h1>Not found</h1>"), 404)
@@ -516,6 +599,8 @@ class Handler(BaseHTTPRequestHandler):
             return post_form(conn, None, path)
         if path == "/snapshots":
             return page_snapshots(conn, path)
+        if path == "/data":
+            return page_data(conn, q, path)
         if path == "/snapshots/new":
             return snapshot_form(None, q, path)
         m = re.fullmatch(r"/posts/(\d+)/edit", path)
@@ -535,7 +620,10 @@ class Handler(BaseHTTPRequestHandler):
         f = parse_qs(self.rfile.read(length).decode("utf-8"), keep_blank_values=True)
         conn = db.connect()
         try:
-            self.redirect(self.route_post(conn, urlparse(self.path).path, f))
+            path = urlparse(self.path).path
+            if path == "/import/preview":
+                return self.send(page_import_preview(conn, f.get("csv", [""])[0]))
+            self.redirect(self.route_post(conn, path, f))
             conn.commit()
         except LookupError:
             self.send(layout("Not found", "<h1>Not found</h1>"), 404)
@@ -543,6 +631,12 @@ class Handler(BaseHTTPRequestHandler):
             conn.close()
 
     def route_post(self, conn, path, f):
+        if path == "/import/commit":
+            rows, _ = csvio.parse(f.get("csv", [""])[0])
+            st = csvio.apply(conn, csvio.plan(conn, rows))
+            msg = (f"Imported: {st['posts_new']} new post(s), {st['posts_updated']} updated, "
+                   f"{st['metrics']} metric record(s), {st['skipped']} row(s) skipped.")
+            return "/data?msg=" + quote(msg)
         if path == "/posts/new":
             vals = post_values(f)
             pid = conn.execute("INSERT INTO posts (title, platform, post_date, date_approx, hook_text, topic_tag, "

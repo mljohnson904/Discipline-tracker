@@ -18,7 +18,7 @@ Options: `--port 9000` (or `PORT=9000`), `CHANNEL_DB=/path/to/file.db`.
 ## Status (building in steps)
 
 - [x] Step 1: Post log, channel stats, dashboard (7/28 day toggle), seed data
-- [ ] Step 2: CSV import / export
+- [x] Step 2: CSV import / export (Data page)
 - [ ] Step 3: Series planner, hook library
 - [ ] Step 4: Script builder + templates
 - [ ] Step 5: Conversion checklist
@@ -34,3 +34,10 @@ Options: `--port 9000` (or `PORT=9000`), `CHANNEL_DB=/path/to/file.db`.
 - Profile-view-to-follow = net followers / profile views.
 - Any metric down more than 50% vs the prior window is flagged. The prior window comes from a stored earlier snapshot, or the percent change the app reported.
 - Seed post dates are approximate (e.g. "~2w old" → relative to Oct 11, 2026). Edit them; titles are truncated as shown in the apps, so edit those too. No topic tags were in the source data, so none were invented.
+
+## CSV import / export (Data page)
+
+- **Export:** `Data` → "Download everything" gives a zip with one CSV per table plus `post_log.csv`. All files open in Excel/Sheets.
+- **Import:** `Data` → choose a file (or paste text) → **Preview** → confirm. Nothing is written until you confirm; bad rows are listed and skipped.
+- Import format = `post_log.csv` columns: `title, platform, post_date, date_approx, hook_text, topic_tag, series_name, series_part, story_key, flag, notes, window_days, window_end, views, viewers, likes, comments, shares, follows_gained, stayed_pct`. Only `title` and `platform` are required. Common header variants (`date`, `tag`, `series`, `stayed to watch`, …) and `;`/tab separators are accepted.
+- A row whose platform + title match an existing post updates it (blank cells never erase data). Re-importing the same window updates that metric record instead of duplicating it.

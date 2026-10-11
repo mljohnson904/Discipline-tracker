@@ -89,6 +89,7 @@ def series_detail(conn, sid, path):
         idea_html += (f'<li class="idea {esc(i["status"])}"><span>{esc(i["idea"])}</span>'
                       f'<form method="post" action="/ideas/{i["id"]}/status">'
                       f'{_status_select(i["status"])}<button class="btn small">Save</button>'
+                      f'<a class="btn small" href="/scripts/new?series={sid}&idea={i["id"]}">Write script</a>'
                       f'<button class="btn small danger" formaction="/ideas/{i["id"]}/delete">✕</button></form></li>')
     body = f"""<p><a href="/series">← All series</a></p>
 <div class="titlebar"><h1>{esc(s["name"])} {badge(s["source"])}</h1></div>

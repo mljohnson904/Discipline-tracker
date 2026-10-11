@@ -65,7 +65,7 @@ CREATE TABLE IF NOT EXISTS scripts (
   series_id INTEGER REFERENCES series(id) ON DELETE SET NULL,
   hook_onscreen TEXT, hook_spoken TEXT, expectation TEXT, reveal TEXT, takeaway TEXT,
   close_ask TEXT, next_part_pointer TEXT, est_seconds INTEGER, is_template INTEGER DEFAULT 0,
-  created_at TEXT DEFAULT CURRENT_TIMESTAMP
+  source TEXT DEFAULT 'manual', created_at TEXT DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE IF NOT EXISTS checklist_items (
@@ -85,9 +85,16 @@ def connect():
 
 def init(conn):
     conn.executescript(SCHEMA)
+    # migrations for databases created by an earlier step
+    if "source" not in [r[1] for r in conn.execute("PRAGMA table_info(scripts)")]:
+        conn.execute("ALTER TABLE scripts ADD COLUMN source TEXT DEFAULT 'manual'")
     if not conn.execute("SELECT 1 FROM meta WHERE key='seeded'").fetchone():
         load_seed(conn)
         conn.execute("INSERT INTO meta VALUES ('seeded', '1')")
+    if not conn.execute("SELECT 1 FROM meta WHERE key='seeded_script_templates'").fetchone():
+        import scripts_ui
+        scripts_ui.seed_templates(conn)
+        conn.execute("INSERT INTO meta VALUES ('seeded_script_templates', '1')")
     conn.commit()
 
 

@@ -18,6 +18,7 @@ from urllib.parse import parse_qs, quote, urlparse
 import csvio
 import db
 import planner
+import scripts_ui
 from ui import *  # noqa: F401,F403
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
@@ -459,6 +460,10 @@ class Handler(BaseHTTPRequestHandler):
 
     def do_GET(self):
         u = urlparse(self.path)
+        if u.path == "/favicon.ico":
+            self.send_response(204)
+            self.end_headers()
+            return
         if u.path.startswith("/static/"):
             fp = os.path.normpath(os.path.join(ROOT, u.path.lstrip("/")))
             if fp.startswith(os.path.join(ROOT, "static")) and os.path.isfile(fp):
@@ -476,6 +481,8 @@ class Handler(BaseHTTPRequestHandler):
                 return self.send(data, ctype="text/csv; charset=utf-8", filename=f"{m[1]}.csv")
             q = parse_qs(u.query)
             page = planner.handle_get(conn, u.path, q)
+            if page is None:
+                page = scripts_ui.handle_get(conn, u.path, q)
             self.send(page if page is not None else self.route_get(conn, u.path, q))
         except LookupError:
             self.send(layout("Not found", "<h1>Not found</h1>"), 404)
@@ -524,6 +531,8 @@ class Handler(BaseHTTPRequestHandler):
 
     def route_post(self, conn, path, f):
         redirect_to = planner.handle_post(conn, path, f)
+        if redirect_to is None:
+            redirect_to = scripts_ui.handle_post(conn, path, f)
         if redirect_to is not None:
             return redirect_to
         if path == "/import/commit":

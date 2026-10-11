@@ -20,7 +20,7 @@ Options: `--port 9000` (or `PORT=9000`), `CHANNEL_DB=/path/to/file.db`.
 - [x] Step 1: Post log, channel stats, dashboard (7/28 day toggle), seed data
 - [x] Step 2: CSV import / export (Data page)
 - [x] Step 3: Series planner, hook library
-- [ ] Step 4: Script builder + templates
+- [x] Step 4: Script builder + templates
 - [ ] Step 5: Conversion checklist
 - [ ] Step 6: Weekly review
 - [ ] Step 7 (optional): "Ask Claude" via `ANTHROPIC_API_KEY` env var
@@ -46,3 +46,11 @@ Options: `--port 9000` (or `PORT=9000`), `CHANNEL_DB=/path/to/file.db`.
 
 - **Series** tab: create a series, add existing posts with a Part number (a post can be set to a different part or removed inline). Missing part numbers are flagged, and the "next-part ideas" list tracks Idea → Drafted → Posted.
 - **Hooks** tab: save hooks with comma-separated tags, search by text/tag/notes, and click a tag chip to filter. A hook's performance is shown **per date window** (7d/28d/30d are never added together). A post counts as using a hook if you linked it on the hook's edit page, or if the post's *hook text* matches the hook exactly (case-insensitive). Hooks typed on posts but not yet in the library are offered under "Hooks from your posts not yet saved".
+
+## Script builder
+
+- **Scripts** tab → New script. Sections: Hook (on-screen text + spoken line), Expectation, Reveal (one specific detail), Takeaway (one lesson), Close (direct follow/share ask), Next-part pointer.
+- A live meter estimates run time from **spoken** words at 2.5 words/second (150 wpm) and flags anything outside **30–45 s**, a long Reveal/Takeaway, a Close with no follow/share ask, or a missing next-part pointer. On-screen text isn't counted (it appears while you speak the hook).
+- **Save as template** copies a script into the Templates list; "Use this template" starts a new script from it. Two starter templates are included (labeled seed).
+- From a series' next-part idea, **Write script** starts a script and marks the idea "Drafted".
+- "Insert a saved hook" pulls from the Hook library. "Copy script text" copies the whole script for your notes app or teleprompter.

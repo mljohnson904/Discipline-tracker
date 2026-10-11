@@ -8,6 +8,7 @@ Standard library only.
 import argparse
 import html
 import json
+import math
 import mimetypes
 import os
 import re
@@ -21,6 +22,7 @@ import askclaude
 import checklist_ui
 import planner
 import review_ui
+import search_ui
 import scripts_ui
 from ui import *  # noqa: F401,F403
 
@@ -154,6 +156,25 @@ def group_table(rows, keyfn, empty_label):
     return h + "</tbody></table></div>"
 
 
+def hero_html(conn):
+    """'Today' card: profile-checklist ring plus the top suggested action from the weekly review."""
+    done, total = checklist_ui.progress(conn)
+    frac = done / total if total else 0
+    circ = 2 * math.pi * 44
+    sums = [review_ui.platform_summary(conn, p, "auto") for p, _ in PLATFORMS]
+    acts = review_ui.suggest(conn, sums, date.today())
+    focus, href = (acts[0][1], acts[0][3]) if acts else ("Log this week's numbers to get a focus.", "/snapshots/new")
+    ring = (f'<div class="ring" role="img" aria-label="Profile checklist: {done} of {total} done"><svg viewBox="0 0 104 104">'
+            f'<circle class="ring-bg" cx="52" cy="52" r="44"/><circle class="ring-fg" cx="52" cy="52" r="44" '
+            f'stroke-dasharray="{circ:.1f}" stroke-dashoffset="{circ * (1 - frac):.1f}" transform="rotate(-90 52 52)"/></svg>'
+            f'<div class="ring-t"><b>{done}</b><span>of {total}</span></div></div>')
+    return (f'<div class="card"><div class="hero">{ring}<div><div class="muted">{date.today().strftime("%A, %B %-d")}</div>'
+            f'<div class="hero-big">Second Mission</div><div class="hero-focus">This week: {esc(focus)}</div>'
+            f'<div class="row"><a class="btn primary small" href="/review">Weekly review</a>'
+            f'<a class="btn small" href="{esc(href)}">Do it</a><a class="btn small" href="/checklist">Profile checklist</a></div>'
+            f'</div></div></div>')
+
+
 def page_dashboard(conn, q, path):
     days = num(q.get("w", ["7"])[0]) or 7
     if days not in WINDOW_CHOICES:
@@ -174,7 +195,7 @@ def page_dashboard(conn, q, path):
         f'<li><a href="/posts/{r["id"]}/edit">{esc(r["title"])}</a><div>{plat_badge(r["platform"])} '
         f'<b>{fint(r["views"])}</b> views · {r["window_days"]}d</div></li>' for r in top) or \
         '<li class="muted">No post views in this window.</li>'
-    body = f"""<h1>Dashboard</h1>
+    body = f"""{hero_html(conn)}<h1 class="sr-only">Dashboard</h1>
 <div class="toggle">{toggle}</div>
 <p class="muted">Platforms are compared on the <b>same {days}-day window</b>. A platform with no {days}d data is
 shown greyed out rather than mixed in. Missing numbers show as —, never as zero.</p>
@@ -185,7 +206,6 @@ shown greyed out rather than mixed in. Missing numbers show as —, never as zer
 <h2>By topic tag</h2>{group_table(rows, lambda r: r["topic_tag"], "(untagged)")}
 <h2>By series</h2>{group_table(rows, lambda r: r["series_name"], "(no series)")}
 <h2>By story key</h2>{group_table(rows, lambda r: r["story_key"], "(no story key)")}
-<p class="muted">Conversion checklist: <a href="/checklist">{checklist_ui.progress(conn)[0]}/{checklist_ui.progress(conn)[1]} profile items done</a>.</p>
 <p class="muted">Tip: topic tags aren't in the seed data (I didn't invent any) — add them on the post pages and
 the tag table fills in.</p>
 {audience_html(conn)}"""
@@ -480,6 +500,8 @@ class Handler(BaseHTTPRequestHandler):
             return self.send("not found", 404, "text/plain")
         conn = db.connect()
         try:
+            if u.path == "/api/search":
+                return self.send(search_ui.handle(conn, parse_qs(u.query)), ctype="application/json")
             if u.path == "/export.zip":
                 return self.send(csvio.export_zip(conn), ctype="application/zip",
                                  filename=f"channel-builder-{date.today().isoformat()}.zip")

@@ -86,3 +86,13 @@ With the key set, the script builder shows an **Ask Claude** panel. Pick a targe
 - Model: `claude-opus-5-5` (override with `ASK_CLAUDE_MODEL`, e.g. `claude-sonnet-5-5` for lower cost). Each click costs roughly a few cents. A server-side refusal fallback is enabled for supported models.
 - Safety rails: a cap of 20 requests per hour (`ASK_CLAUDE_MAX_PER_HOUR`), and the endpoint rejects requests that don't come from the app's own page (so another website can't trigger paid calls). In `--lan` mode anyone on your Wi-Fi can use the app, including this button, so only use `--lan` on a network you trust.
 - To keep data local, simply don't set the variable.
+
+## Look and navigation
+
+The interface follows the "Personal Finance Teacher Toolkit" design: a warm paper palette with a dark mode, a top app bar, and colour-coded sections.
+
+- **Phones:** a bottom tab bar (Today, Plan, Track, Checklist, Data). Plan and Track open a small menu above the bar. **Desktop (1000px+):** the same groups as a left sidebar.
+- **Search** (top bar; press `/` anywhere): finds posts, hooks, scripts, series and next-part ideas. Arrow keys + Enter, or tap a result.
+- **Dark/light toggle** (sun/moon button) is remembered in this browser; the default follows your device setting.
+- **Today** page opens with a hero: the profile-checklist ring and this week's top suggested action from the weekly review.
+- Printing a page hides the navigation and prints just the content.

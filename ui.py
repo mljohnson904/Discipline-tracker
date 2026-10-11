@@ -5,6 +5,8 @@ from datetime import date
 PLATFORMS = [("tiktok", "TikTok"), ("youtube", "YouTube Shorts"), ("instagram", "Instagram Reels")]
 PNAME = dict(PLATFORMS)
 DROP_THRESHOLD = -50.0
+WINDOW_CHOICES = [7, 14, 28, 30, 60, 90]  # days; longer windows become useful as the accounts age
+WINDOW_OPTIONS = [(d, f"{d} days") for d in WINDOW_CHOICES]
 
 METRIC_FIELDS = [("views", "Views", int), ("viewers", "Viewers", int), ("likes", "Likes", int),
                  ("comments", "Comments", int), ("shares", "Shares", int),
@@ -16,7 +18,7 @@ SNAP_FIELDS = [("views", "Views", int), ("viewers", "Viewers", int), ("new_viewe
                ("total_followers", "Total followers", int), ("engaged_views", "Engaged views", int),
                ("watch_hours", "Watch time (hrs)", float), ("stayed_pct", "Stayed to watch %", float)]
 
-NAV = [("/", "Dashboard"), ("/posts", "Posts"), ("/series", "Series"), ("/hooks", "Hooks"),
+NAV = [("/", "Dashboard"), ("/review", "Weekly review"), ("/posts", "Posts"), ("/series", "Series"), ("/hooks", "Hooks"),
        ("/scripts", "Scripts"), ("/checklist", "Checklist"),
        ("/snapshots", "Channel stats"), ("/data", "Data")]
 

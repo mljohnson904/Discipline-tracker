@@ -19,6 +19,7 @@ import csvio
 import db
 import checklist_ui
 import planner
+import review_ui
 import scripts_ui
 from ui import *  # noqa: F401,F403
 
@@ -153,10 +154,14 @@ def group_table(rows, keyfn, empty_label):
 
 
 def page_dashboard(conn, q, path):
-    days = 28 if q.get("w", ["7"])[0] == "28" else 7
+    days = num(q.get("w", ["7"])[0]) or 7
+    if days not in WINDOW_CHOICES:
+        days = 7
+    have = {r[0] for r in conn.execute("SELECT DISTINCT window_days FROM channel_snapshots")}
+    shown_windows = [d for d in WINDOW_CHOICES if d in (7, 28) or d in have or d == days]
     loose = q.get("loose", [""])[0] == "1"
     toggle = "".join(f'<a class="{"on" if d == days else ""}" href="/?w={d}{"&loose=1" if loose else ""}">{d} days</a>'
-                     for d in (7, 28))
+                     for d in shown_windows)
     cards = "".join(platform_card(conn, p, days) for p, _ in PLATFORMS)
     rows = post_rows_for_window(conn, days, loose)
     excluded = conn.execute("SELECT COUNT(DISTINCT post_id) FROM post_metrics").fetchone()[0] - len(rows)
@@ -254,7 +259,7 @@ def post_form(conn, p, path, msg=""):
     today = date.today().isoformat()
     metric_inputs = "".join(field(k, lab, kind="number", step="any") for k, lab, _ in METRIC_FIELDS)
     new_metrics = f"""<fieldset><legend>{'Metrics (optional)' if is_new else 'Add a metric record'}</legend>
-<div class="row">{select("window_days", "Window", [(7, "7 days"), (28, "28 days"), (30, "30 days")], 28)}
+<div class="row">{select("window_days", "Window", WINDOW_OPTIONS, 28)}
 {field("window_end", "Window ends", today, "date")}</div>
 <p class="muted">Every metric record stores its date window. Leave blank what you don't know.</p>
 <div class="row">{metric_inputs}</div></fieldset>"""
@@ -280,7 +285,7 @@ def post_form(conn, p, path, msg=""):
             inputs = "".join(field(k, lab, m[k], kind="number", step="any") for k, lab, _ in METRIC_FIELDS)
             rows += f"""<form method="post" action="/metrics/{m['id']}/save" class="card stack">
 <div class="muted">{esc(window_label(m))} {badge(m['source'])}</div>
-<div class="row">{select("window_days", "Window", [(7, "7 days"), (28, "28 days"), (30, "30 days")], m['window_days'])}
+<div class="row">{select("window_days", "Window", WINDOW_OPTIONS, m['window_days'])}
 {field("window_end", "Window ends", m['window_end'], "date")}</div><div class="row">{inputs}</div>
 <div class="row"><button class="btn small primary">Save</button>
 <button class="btn small danger" formaction="/metrics/{m['id']}/delete">Delete</button></div></form>"""
@@ -341,8 +346,8 @@ def snapshot_form(s, q, path):
     body = f"""<h1>{'Add' if is_new else 'Edit'} channel snapshot</h1>
 <form method="post" class="stack">
 <div class="row">{select("platform", "Platform", PLATFORMS, g("platform", qv("platform", "tiktok")))}
-{select("window_days", "Window", [(7, "7 days"), (28, "28 days"), (30, "30 days")], g("window_days", qv("window_days", "28")))}
-{field("window_end", "Window ends", g("window_end", date.today().isoformat()), "date")}</div>
+{select("window_days", "Window", WINDOW_OPTIONS, g("window_days", qv("window_days", "28")))}
+{field("window_end", "Window ends", g("window_end", qv("window_end", date.today().isoformat())), "date")}</div>
 <div class="row">{inputs}</div>
 <label>Notes (e.g. discrepancies between screens)<textarea name="notes" rows="3">{esc(g("notes"))}</textarea></label>
 <button class="btn primary">Save</button></form>
@@ -487,6 +492,8 @@ class Handler(BaseHTTPRequestHandler):
                 page = scripts_ui.handle_get(conn, u.path, q)
             if page is None:
                 page = checklist_ui.handle_get(conn, u.path, q)
+            if page is None:
+                page = review_ui.handle_get(conn, u.path, q)
             self.send(page if page is not None else self.route_get(conn, u.path, q))
         except LookupError:
             self.send(layout("Not found", "<h1>Not found</h1>"), 404)

@@ -91,8 +91,8 @@ def parse(text):
             out["stayed_pct"] = _num(raw.get("stayed_pct"))
             wd = _num(raw.get("window_days"), True)
             out["has_metrics"] = any(out[k] is not None for k in INT_COLS + ["stayed_pct"])
-            if out["has_metrics"] and wd not in (None, 7, 28, 30):
-                raise ValueError("window_days must be 7, 28 or 30")
+            if out["has_metrics"] and wd not in (None, 7, 14, 28, 30, 60, 90):
+                raise ValueError("window_days must be 7, 14, 28, 30, 60 or 90")
             out["window_days"] = wd or 28
             out["window_end"] = _date(raw.get("window_end")) or date.today().isoformat()
         except ValueError as e:

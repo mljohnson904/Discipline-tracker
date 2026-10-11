@@ -62,3 +62,5 @@ form.inline{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:6p
 .badge.t-ok{background:#e7f6ec;color:var(--ok)}.badge.t-long{background:var(--warnbg);color:var(--warn)}.badge.t-short{background:#fff4d6;color:#7a5b00}
 .citem{border-top:1px solid var(--line);padding:12px 0;display:flex;flex-direction:column;gap:8px}.citem:first-of-type{border-top:0}
 .citem.done b{color:var(--ok)}label.check.big{font-size:1rem}label.check.big input{width:22px;height:22px;margin-right:6px}
+.acts{padding-left:22px}.act{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin:10px 0}.act p{margin:6px 0;color:var(--mute);font-size:.92rem}
+tr.rate td{background:var(--bg);font-style:italic}

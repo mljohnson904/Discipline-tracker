@@ -22,12 +22,12 @@ Options: `--port 9000` (or `PORT=9000`), `CHANNEL_DB=/path/to/file.db`.
 - [x] Step 3: Series planner, hook library
 - [x] Step 4: Script builder + templates
 - [x] Step 5: Conversion checklist
-- [ ] Step 6: Weekly review
+- [x] Step 6: Weekly review
 - [ ] Step 7 (optional): "Ask Claude" via `ANTHROPIC_API_KEY` env var
 
 ## How the numbers work
 
-- Every metric record stores its **date window** (7, 28 or 30 days + end date).
+- Every metric record stores its **date window** (7, 14, 28, 30, 60 or 90 days + end date).
 - The dashboard only compares platforms on the **same window**. A platform with no data for the chosen window is greyed out, not mixed in. (Instagram reports 30 days, so it appears only when you add a 7d/28d snapshot; the post tables have an opt-in "28d ≈ 30d" switch.)
 - Missing data is shown as `—`, never as 0.
 - Engagement rate: TikTok = (likes+comments+shares)/views; Instagram = interactions/views; YouTube shows engaged-view rate (its own metric, labeled separately).
@@ -59,3 +59,13 @@ Options: `--port 9000` (or `PORT=9000`), `CHANNEL_DB=/path/to/file.db`.
 
 - **Checklist** tab: for each platform, five items (bio line, pinned post, link, profile photo, featured content). Ticking an item stamps today's date (editable). Pressing Save with a date marks it done on that date; unticking clears the date. Each item has a note for what you set it to.
 - The dashboard shows overall progress (x/15).
+
+## Weekly review
+
+- **Weekly review** tab: for each platform with a 7-day snapshot, this week vs a baseline, per-7-day, with ⚠ on anything down 50% or more.
+- **Baseline** (picked per platform, or force one with the Auto/28d/60d/90d chips):
+  1. *Exact*: a stored snapshot (28d preferred) that ends the day before the 7-day window starts.
+  2. *Derived*: a longer snapshot (28/60/90d) that contains the week. This week is subtracted and the remainder is averaged per 7 days. This is why a 28d snapshot works even though its dates overlap the 7d one.
+  3. Neither: the page says so and links to the form for the missing snapshot. Nothing is guessed.
+- As the accounts age you can log 60 or 90 day snapshots; they become usable baselines automatically. Longer windows are also available in the forms, CSV import and the dashboard toggle.
+- **3 suggested actions** are rule-based, not AI, and each shows the numbers behind it: views down 50%+, low follows per 1K viewers, low shares per 1K views, a strong story missing on a platform, fewer than 3 posts this week, a low stayed-to-watch hook, unfinished checklist.

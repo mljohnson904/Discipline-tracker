@@ -17,6 +17,7 @@ from urllib.parse import parse_qs, quote, urlparse
 
 import csvio
 import db
+import checklist_ui
 import planner
 import scripts_ui
 from ui import *  # noqa: F401,F403
@@ -178,6 +179,7 @@ shown greyed out rather than mixed in. Missing numbers show as —, never as zer
 <h2>By topic tag</h2>{group_table(rows, lambda r: r["topic_tag"], "(untagged)")}
 <h2>By series</h2>{group_table(rows, lambda r: r["series_name"], "(no series)")}
 <h2>By story key</h2>{group_table(rows, lambda r: r["story_key"], "(no story key)")}
+<p class="muted">Conversion checklist: <a href="/checklist">{checklist_ui.progress(conn)[0]}/{checklist_ui.progress(conn)[1]} profile items done</a>.</p>
 <p class="muted">Tip: topic tags aren't in the seed data (I didn't invent any) — add them on the post pages and
 the tag table fills in.</p>
 {audience_html(conn)}"""
@@ -483,6 +485,8 @@ class Handler(BaseHTTPRequestHandler):
             page = planner.handle_get(conn, u.path, q)
             if page is None:
                 page = scripts_ui.handle_get(conn, u.path, q)
+            if page is None:
+                page = checklist_ui.handle_get(conn, u.path, q)
             self.send(page if page is not None else self.route_get(conn, u.path, q))
         except LookupError:
             self.send(layout("Not found", "<h1>Not found</h1>"), 404)
@@ -533,6 +537,8 @@ class Handler(BaseHTTPRequestHandler):
         redirect_to = planner.handle_post(conn, path, f)
         if redirect_to is None:
             redirect_to = scripts_ui.handle_post(conn, path, f)
+        if redirect_to is None:
+            redirect_to = checklist_ui.handle_post(conn, path, f)
         if redirect_to is not None:
             return redirect_to
         if path == "/import/commit":

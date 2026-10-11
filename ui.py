@@ -17,7 +17,7 @@ SNAP_FIELDS = [("views", "Views", int), ("viewers", "Viewers", int), ("new_viewe
                ("watch_hours", "Watch time (hrs)", float), ("stayed_pct", "Stayed to watch %", float)]
 
 NAV = [("/", "Dashboard"), ("/posts", "Posts"), ("/series", "Series"), ("/hooks", "Hooks"),
-       ("/scripts", "Scripts"),
+       ("/scripts", "Scripts"), ("/checklist", "Checklist"),
        ("/snapshots", "Channel stats"), ("/data", "Data")]
 
 

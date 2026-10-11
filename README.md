@@ -21,7 +21,7 @@ Options: `--port 9000` (or `PORT=9000`), `CHANNEL_DB=/path/to/file.db`.
 - [x] Step 2: CSV import / export (Data page)
 - [x] Step 3: Series planner, hook library
 - [x] Step 4: Script builder + templates
-- [ ] Step 5: Conversion checklist
+- [x] Step 5: Conversion checklist
 - [ ] Step 6: Weekly review
 - [ ] Step 7 (optional): "Ask Claude" via `ANTHROPIC_API_KEY` env var
 
@@ -54,3 +54,8 @@ Options: `--port 9000` (or `PORT=9000`), `CHANNEL_DB=/path/to/file.db`.
 - **Save as template** copies a script into the Templates list; "Use this template" starts a new script from it. Two starter templates are included (labeled seed).
 - From a series' next-part idea, **Write script** starts a script and marks the idea "Drafted".
 - "Insert a saved hook" pulls from the Hook library. "Copy script text" copies the whole script for your notes app or teleprompter.
+
+## Conversion checklist
+
+- **Checklist** tab: for each platform, five items (bio line, pinned post, link, profile photo, featured content). Ticking an item stamps today's date (editable). Pressing Save with a date marks it done on that date; unticking clears the date. Each item has a note for what you set it to.
+- The dashboard shows overall progress (x/15).

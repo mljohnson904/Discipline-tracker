@@ -45,3 +45,10 @@ fieldset{border:1px solid var(--line);border-radius:12px}
 @media(max-width:600px){main{padding:12px}}
 .flash{background:#e7f6ec;color:var(--ok);padding:10px 14px;border-radius:10px;font-weight:600}
 details{margin:12px 0}summary{cursor:pointer}
+.chip{display:inline-block;padding:3px 10px;margin:2px 4px 2px 0;border-radius:999px;border:1px solid var(--line);background:var(--card);color:var(--ink);text-decoration:none;font-size:.85rem}
+.chip.on{background:var(--accent);color:#fff;border-color:var(--accent)}.chip small{opacity:.7}
+form.inline{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:6px}form.inline input[type=number]{width:90px}
+.partpost{padding:8px 0;border-top:1px solid var(--line)}.partpost:first-of-type{border-top:0}
+.part h3 .muted{font-weight:400}
+.ideas{list-style:none;padding:0}.ideas li{display:flex;flex-wrap:wrap;gap:8px;justify-content:space-between;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:8px 12px;margin:6px 0}
+.ideas form{display:flex;gap:6px;align-items:center}.ideas select{width:auto}.idea.posted span{text-decoration:line-through;color:var(--mute)}

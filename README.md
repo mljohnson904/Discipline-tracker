@@ -19,7 +19,7 @@ Options: `--port 9000` (or `PORT=9000`), `CHANNEL_DB=/path/to/file.db`.
 
 - [x] Step 1: Post log, channel stats, dashboard (7/28 day toggle), seed data
 - [x] Step 2: CSV import / export (Data page)
-- [ ] Step 3: Series planner, hook library
+- [x] Step 3: Series planner, hook library
 - [ ] Step 4: Script builder + templates
 - [ ] Step 5: Conversion checklist
 - [ ] Step 6: Weekly review
@@ -41,3 +41,8 @@ Options: `--port 9000` (or `PORT=9000`), `CHANNEL_DB=/path/to/file.db`.
 - **Import:** `Data` → choose a file (or paste text) → **Preview** → confirm. Nothing is written until you confirm; bad rows are listed and skipped.
 - Import format = `post_log.csv` columns: `title, platform, post_date, date_approx, hook_text, topic_tag, series_name, series_part, story_key, flag, notes, window_days, window_end, views, viewers, likes, comments, shares, follows_gained, stayed_pct`. Only `title` and `platform` are required. Common header variants (`date`, `tag`, `series`, `stayed to watch`, …) and `;`/tab separators are accepted.
 - A row whose platform + title match an existing post updates it (blank cells never erase data). Re-importing the same window updates that metric record instead of duplicating it.
+
+## Series planner and hook library
+
+- **Series** tab: create a series, add existing posts with a Part number (a post can be set to a different part or removed inline). Missing part numbers are flagged, and the "next-part ideas" list tracks Idea → Drafted → Posted.
+- **Hooks** tab: save hooks with comma-separated tags, search by text/tag/notes, and click a tag chip to filter. A hook's performance is shown **per date window** (7d/28d/30d are never added together). A post counts as using a hook if you linked it on the hook's edit page, or if the post's *hook text* matches the hook exactly (case-insensitive). Hooks typed on posts but not yet in the library are offered under "Hooks from your posts not yet saved".

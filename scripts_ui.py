@@ -109,8 +109,46 @@ def script_form(conn, s, q, path):
 <div class="row"><button class="btn primary">Save script</button><button type="button" class="btn" id="copybtn">Copy script text</button></div>
 </form>
 <div class="row">{footer}</div>
+{ask_panel()}
 <script>{SCRIPT_JS.replace("__WPS__", str(WPS)).replace("__MIN__", str(MIN_S)).replace("__MAX__", str(MAX_S))}</script>"""
     return layout("Script", body, path)
+
+
+def ask_panel():
+    """The optional 'Ask Claude' panel. Rendered only when ANTHROPIC_API_KEY is set; otherwise nothing is shown."""
+    import askclaude
+    if not askclaude.enabled():
+        return ""
+    plats = "".join(f'<option value="{k}">{esc(v)}</option>' for k, v in askclaude.PLATFORM_NAMES.items())
+    return f"""<section class="card ask" id="askpanel"><h3>Ask Claude</h3>
+<p class="muted">Sends this draft script and a summary of your post log (titles, hooks, series, metrics, channel
+snapshots, hook library) to the Anthropic API ({esc(askclaude.MODEL)}) for hook variations and feedback.
+Each request costs a few cents.</p>
+<div class="row"><label>Target platform<select id="askplat">{plats}</select></label>
+<button type="button" class="btn primary" id="askbtn">Ask Claude</button></div>
+<p class="muted" id="askstatus"></p><pre class="claude-out" id="askout" hidden></pre></section>
+<script>{ASK_JS}</script>"""
+
+
+ASK_JS = r"""
+(function () {
+  var btn = document.getElementById('askbtn'), out = document.getElementById('askout'), st = document.getElementById('askstatus');
+  btn.addEventListener('click', function () {
+    if (!confirm('Send this draft and a summary of your post log to the Anthropic API?')) return;
+    var data = new URLSearchParams(new FormData(document.getElementById('scriptform')));
+    data.set('platform', document.getElementById('askplat').value);
+    btn.disabled = true; out.hidden = true; st.textContent = 'Asking Claude… this can take up to a minute.';
+    fetch('/ask-claude', { method: 'POST', body: data, headers: { 'X-Requested-With': 'channel-builder' } })
+      .then(function (r) { return r.json(); })
+      .then(function (j) {
+        if (j.ok) { out.textContent = j.text; out.hidden = false; st.textContent = j.model + ' · ' + j.usage; }
+        else { st.textContent = j.error || 'Something went wrong.'; }
+      })
+      .catch(function () { st.textContent = 'Request failed. Is the app still running?'; })
+      .then(function () { btn.disabled = false; });
+  });
+})();
+"""
 
 
 SCRIPT_JS = r"""

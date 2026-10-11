@@ -64,3 +64,5 @@ form.inline{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:6p
 .citem.done b{color:var(--ok)}label.check.big{font-size:1rem}label.check.big input{width:22px;height:22px;margin-right:6px}
 .acts{padding-left:22px}.act{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin:10px 0}.act p{margin:6px 0;color:var(--mute);font-size:.92rem}
 tr.rate td{background:var(--bg);font-style:italic}
+.claude-out{white-space:pre-wrap;word-wrap:break-word;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:12px;font:inherit;font-size:.95rem}
+.ask{margin-top:16px}

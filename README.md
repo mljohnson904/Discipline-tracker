@@ -23,7 +23,7 @@ Options: `--port 9000` (or `PORT=9000`), `CHANNEL_DB=/path/to/file.db`.
 - [x] Step 4: Script builder + templates
 - [x] Step 5: Conversion checklist
 - [x] Step 6: Weekly review
-- [ ] Step 7 (optional): "Ask Claude" via `ANTHROPIC_API_KEY` env var
+- [x] Step 7 (optional): "Ask Claude" via `ANTHROPIC_API_KEY` env var
 
 ## How the numbers work
 
@@ -69,3 +69,20 @@ Options: `--port 9000` (or `PORT=9000`), `CHANNEL_DB=/path/to/file.db`.
   3. Neither: the page says so and links to the form for the missing snapshot. Nothing is guessed.
 - As the accounts age you can log 60 or 90 day snapshots; they become usable baselines automatically. Longer windows are also available in the forms, CSV import and the dashboard toggle.
 - **3 suggested actions** are rule-based, not AI, and each shows the numbers behind it: views down 50%+, low follows per 1K viewers, low shares per 1K views, a strong story missing on a platform, fewer than 3 posts this week, a low stayed-to-watch hook, unfinished checklist.
+
+## Optional: Ask Claude (hook variations + script feedback)
+
+Off by default. The core app needs nothing but Python; this feature adds one optional package and one environment variable.
+
+```
+pip install anthropic
+export ANTHROPIC_API_KEY=your-key-here      # Mac/Linux; the app never stores or prints it
+python3 app.py
+```
+
+With the key set, the script builder shows an **Ask Claude** panel. Pick a target platform and click the button; after a confirmation, it sends your **draft script** plus a text summary of your **post log** (titles, dates, hooks, series, story keys, metrics), **channel snapshots** and **hook library** to the Anthropic API and shows 5 hook variations, feedback against the script structure, and one conversion tweak. Without the key the panel doesn't appear and the endpoint answers 404.
+
+- The key is read from the environment by the Anthropic SDK. It is never hardcoded, saved in the database, rendered in a page, or included in what is sent.
+- Model: `claude-opus-5-5` (override with `ASK_CLAUDE_MODEL`, e.g. `claude-sonnet-5-5` for lower cost). Each click costs roughly a few cents. A server-side refusal fallback is enabled for supported models.
+- Safety rails: a cap of 20 requests per hour (`ASK_CLAUDE_MAX_PER_HOUR`), and the endpoint rejects requests that don't come from the app's own page (so another website can't trigger paid calls). In `--lan` mode anyone on your Wi-Fi can use the app, including this button, so only use `--lan` on a network you trust.
+- To keep data local, simply don't set the variable.

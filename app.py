@@ -17,6 +17,7 @@ from urllib.parse import parse_qs, quote, urlparse
 
 import csvio
 import db
+import askclaude
 import checklist_ui
 import planner
 import review_ui
@@ -531,6 +532,8 @@ class Handler(BaseHTTPRequestHandler):
         conn = db.connect()
         try:
             path = urlparse(self.path).path
+            if path == "/ask-claude":
+                return self.ask_claude(conn, f)
             if path == "/import/preview":
                 return self.send(page_import_preview(conn, f.get("csv", [""])[0]))
             self.redirect(self.route_post(conn, path, f))
@@ -539,6 +542,15 @@ class Handler(BaseHTTPRequestHandler):
             self.send(layout("Not found", "<h1>Not found</h1>"), 404)
         finally:
             conn.close()
+
+    def ask_claude(self, conn, f):
+        """JSON endpoint. Blocks cross-site requests (a web page you visit must not be able to spend your API money)."""
+        host = self.headers.get("Host", "")
+        origin = self.headers.get("Origin")
+        if self.headers.get("X-Requested-With") != "channel-builder" or (origin and urlparse(origin).netloc != host):
+            return self.send(askclaude.json_bytes({"ok": False, "error": "Forbidden"}), 403, "application/json")
+        status, payload = askclaude.ask(conn, f)
+        self.send(askclaude.json_bytes(payload), status, "application/json")
 
     def route_post(self, conn, path, f):
         redirect_to = planner.handle_post(conn, path, f)
